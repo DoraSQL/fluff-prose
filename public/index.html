@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>廢話文學智庫</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+
+    <div class="floating-particles" id="particles"></div>
+
+    <div class="text-center mb-8 z-10">
+        <h1 class="text-4xl md:text-5xl font-black mb-2 tracking-tighter text-glow bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 to-purple-400">
+            廢話文學智庫
+        </h1>
+        <p class="text-indigo-200 opacity-70">聽君一席話，如聽一席話</p>
+    </div>
+
+    <div class="scene" id="scene">
+        <div class="card" id="card">
+            <div class="card-face card-front">
+                <div class="glow"></div>
+                <div class="text-6xl mb-4">㊙️</div>
+                <div class="text-xl font-bold tracking-widest text-white/90">揭開宇宙奧祕</div>
+                <div class="mt-4 text-xs text-indigo-300 animate-pulse">點擊翻轉人生</div>
+                <div class="stamp">Top Secret</div>
+            </div>
+            <div class="card-face card-back">
+                <div class="glow"></div>
+                <div id="nonsense-content" class="quote-container text-white text-glow">
+                    正在載入智慧...
+                </div>
+                <div id="master-comment" class="mt-8 text-xs italic text-indigo-400 font-medium">
+                    —— 廢話大師
+                </div>
+                <div class="stamp">Certified Nonsense</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-12 flex flex-col items-center gap-4 z-10">
+        <div class="flex gap-4">
+            <button id="next-button" class="btn-fancy px-8 py-3 rounded-full font-bold text-sm tracking-widest text-white">
+                下一句神諭
+            </button>
+        </div>
+        
+        <div class="flex items-center gap-8 mt-4">
+            <div class="text-center">
+                <div id="counter" class="text-2xl font-mono text-indigo-400">0</div>
+                <div class="text-[10px] uppercase tracking-tighter opacity-50">啟發次數</div>
+            </div>
+            <div class="text-center">
+                <div id="waste-level" class="text-2xl font-mono text-purple-400">100%</div>
+                <div class="text-[10px] uppercase tracking-tighter opacity-50">廢話純度</div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="./main.js"></script>
+</body>
+</html>

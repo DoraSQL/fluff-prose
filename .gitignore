@@ -1,0 +1,5 @@
+dist/
+node_modules/
+.bun/
+src/quotes.generated.ts
+*.log
