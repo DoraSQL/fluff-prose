@@ -20,7 +20,7 @@ body {
 /* 3D Scene Container */
 .scene {
     width: 320px;
-    height: 450px;
+    height: 420px;
     perspective: 1200px;
     cursor: pointer;
     z-index: 10;
