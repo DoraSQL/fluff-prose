@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>廢話文學智庫</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root {
+            --primary: #6366f1;
+            --accent: #a855f7;
+            --bg: #0f172a;
+        }
+
+        body {
+            background: radial-gradient(circle at center, #1e1b4b 0%, #0f172a 100%);
+            color: white;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+            font-family: 'PingFang TC', 'Microsoft JhengHei', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* 3D Scene Container */
+        .scene {
+            width: 320px;
+            height: 450px;
+            perspective: 1200px;
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        .card {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transform-style: preserve-3d;
+        }
+
+        .card.is-flipped {
+            transform: rotateY(180deg) rotateZ(2deg);
+        }
+
+        /* Card Faces */
+        .card-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-radius: 24px;
+            padding: 2rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .card-front {
+            background: linear-gradient(135deg, #4338ca 0%, #6d28d9 100%);
+            background-image: url("https://www.transparenttextures.com/patterns/carbon-fibre.png");
+        }
+
+        .card-back {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            transform: rotateY(180deg);
+            border: 2px solid var(--primary);
+        }
+
+        /* Decorative Elements */
+        .glow {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 50% 50%, rgba(99, 102, 241, 0.15) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .floating-particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .particle {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            animation: float linear infinite;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(100vh) scale(0); opacity: 0; }
+            50% { opacity: 0.5; }
+            100% { transform: translateY(-100px) scale(1.2); opacity: 0; }
+        }
+
+        .text-glow {
+            text-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+        }
+
+        /* Button Custom UI */
+        .btn-fancy {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .btn-fancy:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .quote-container {
+            font-size: 1.5rem;
+            line-height: 1.6;
+            font-weight: 700;
+            text-align: center;
+        }
+
+        .stamp {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.3);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 4px 8px;
+            border-radius: 4px;
+            transform: rotate(-15deg);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="floating-particles" id="particles"></div>
+
+    <div class="text-center mb-8 z-10">
+        <h1 class="text-4xl md:text-5xl font-black mb-2 tracking-tighter text-glow bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 to-purple-400">
+            廢話文學智庫
+        </h1>
+        <p class="text-indigo-200 opacity-70">聽君一席話，如聽一席話</p>
+    </div>
+
+    <div class="scene" onclick="flipCard()">
+        <div class="card" id="card">
+            <div class="card-face card-front">
+                <div class="glow"></div>
+                <div class="text-6xl mb-4">㊙️</div>
+                <div class="text-xl font-bold tracking-widest text-white/90">揭開宇宙奧祕</div>
+                <div class="mt-4 text-xs text-indigo-300 animate-pulse">點擊翻轉人生</div>
+                <div class="stamp">Top Secret</div>
+            </div>
+            <div class="card-face card-back">
+                <div class="glow"></div>
+                <div id="nonsense-content" class="quote-container text-white text-glow">
+                    正在載入智慧...
+                </div>
+                <div id="master-comment" class="mt-8 text-xs italic text-indigo-400 font-medium">
+                    —— 廢話大師
+                </div>
+                <div class="stamp">Certified Nonsense</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-12 flex flex-col items-center gap-4 z-10">
+        <div class="flex gap-4">
+            <button onclick="nextNonsense()" class="btn-fancy px-8 py-3 rounded-full font-bold text-sm tracking-widest text-white">
+                下一句神諭
+            </button>
+        </div>
+        
+        <div class="flex items-center gap-8 mt-4">
+            <div class="text-center">
+                <div id="counter" class="text-2xl font-mono text-indigo-400">0</div>
+                <div class="text-[10px] uppercase tracking-tighter opacity-50">啟發次數</div>
+            </div>
+            <div class="text-center">
+                <div id="waste-level" class="text-2xl font-mono text-purple-400">100%</div>
+                <div class="text-[10px] uppercase tracking-tighter opacity-50">廢話純度</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const quotes = [
+            "聽君一席話，如聽一席話", "當你越過山的時候，你就擁有了越過山的能力", "三人行，必有三人",
+            "關於明天的事情，我們後天就知道了", "運氣這東西，全靠運氣", "越聰明的人，腦子就越聰明",
+            "長得好看的女生都挺漂亮的", "十年磨一劍，五年磨半劍", "當你的左臉被打，那麼你的右臉就不會痛",
+            "我之前還沒發現，當我發現的時候我已經發現了", "我長話短說，但是說來話長", "字越少，句子就越短",
+            "股票規律找到了，不是漲就是跌", "俗話說得好：俗話說得好", "七天不見，如隔一周",
+            "這條魚到死之前一直都是活的", "能說出這種話的人，一定能說出這種話", "人每呼吸六十秒，生命就會減少一分鐘",
+            "當你每天省下一杯奶茶的錢，十天後就可以買十杯奶茶", "睡覺的時候一定要閉上眼睛，不然會睡不著",
+            "做為一個過來人，我已經過來了", "誰能想到當我還是一個孩子的時候，我還只是一個孩子",
+            "我不喜歡吃泡麵就是因為它有股泡麵味", "如果你願意多花一點時間了解我，你就會發現你花了一些時間",
+            "這事但凡有一點意義也不至於一點意義都沒有", "沒有對象的人，應該還是單身吧",
+            "三句話，讓男人聽了我三句話", "雪崩的時候，沒有一片雪花是不崩的", "聽你放屁就像在聽放屁一樣",
+            "你瘦下來一定很瘦吧", "據我所知我一無所知", "蟬的翅膀有多薄呢？薄如蟬翼",
+            "萬里無雲的天空中竟然沒有一片雲", "天王老子來了，來的也只是天王老子", "能力越大，能力就越大",
+            "當你照鏡子時，你會看見有一個和你長得一樣的人", "一日不見如隔一日", "希望我們下次見面是在下一次",
+            "今天我吃了半個西瓜，意外地發現還剩下了半個西瓜", "除了開頭、中間、結尾不太好，整體上看還是不錯的",
+            "唱歌可以，但不準發出聲音", "當你越過了喜馬拉雅山，你就擁有了越過喜馬拉雅山的能力",
+            "除了沒操作，其他操作都挺好的", "其實你要是長得不醜，也挺好看的", "為什麼要討厭懶人呢，明明他們什麼都沒做啊",
+            "你要是不醜還是挺好看的", "記是記得住，就是想不起來了", "剝開香蕉後，你會發現一個剝了皮的香蕉",
+            "醫生摸著我的肚子問我這裡有什麼感覺嗎？我說我感覺有人在摸我肚子", "恭喜你被我恭喜了",
+            "我前腳剛走，後腳就跟上了", "你長得真好看，特別是眼睛，一共兩個不多不少",
+            "如果我沒猜錯的話，那我一定是猜對了", "千里江陵一日還，五百里江陵半日還",
+            "當你吃下了 20 碗米飯，換算下來竟然相當於攝入了 20 碗米飯的熱量", "我就是有點胖，不然挺瘦的",
+            "但凡你這話說的沾邊點，也不至於一點不沾邊", "每次我不知道說什麼的時候我就不知道說什麼",
+            "我如果頭不禿的話，頭髮還是挺多的", "雖然今天什麼也沒幹，但還是辛苦我了",
+            "情況就是這麼個情況，具體什麼情況，還得看情況", "這個馬鈴薯長得跟土豆一樣",
+            "如果你是我女朋友，那麼我就是你男朋友", "我第一次去某國的時候驚呆了，我從來沒有在哪個國家看到過這麼多某國人",
+            "這場車禍的死者沒受傷吧？", "上次跟你見面的時候還是在上次", "抱開內容不談，你講得還蠻有道理的",
+            "我記得看你上一篇文章的時候還是在上一篇文章的時候", "你長得挺好看的應該挺漂亮吧", "我直呼我直呼",
+            "這個西紅柿，怎麼有一股番茄味", "上次看到這麼這麼的發言還是上次", "這句話我猛然一看，就猛然看到這句話",
+            "你搁這搁這呢？", "香蕉越大，香蕉皮越大", "上次看到這句話的時候還是在上次",
+            "一個冷知識 24 小時過去之後一天就過去了", "每呼吸一分鐘就過去了 60 秒",
+            "今天教大家一個非常實用的生活技巧：先邁左腳再邁右腳，就可以走路了", "這屬於是典型中的典型了",
+            "你打一下你的左臉，你會發現你的右臉不疼", "相信你一定行，除非你自己不行", "螃蟹死之前是活的",
+            "做為一個過來人，我給的建議是別過來", "你不懶的時候，其實還是很勤奮的", "你知道我為什麼那麼窮嗎？因為沒錢",
+            "冷知識：每呼吸 60 秒，生命就會減少一分鐘", "問：你什麼時候有空啊？答：有空的時候，自然就有空啦！",
+            "如果我不醜的話，那肯定很帥吧", "上一次聽你這麼說話還是上一次", "不能說毫無關係，只能說完全無關",
+            "但凡你這話說的有點道理，也不至於一點道理沒有", "如果我沒說錯的話，那就是沒說錯的話",
+            "除了沒幹工作以外，你工作外的事幹得都挺好", "門前有兩棵樹，一棵是棗樹，另一棵也是棗樹",
+            "當你找東西時，你有可能會找到，也有可能找不到", "如果你是我姐妹的話，我們就是姐妹",
+            "你是個明白人，我明白你明白的意思", "你跟我搁這兒搁這呢", "越聰明的人腦子就越聰明",
+            "聽你這麼說，確實是你說的這麼回事", "當你越過了喜馬拉雅山你就擁有了越過喜馬拉雅山的能力",
+            "人在不開心的時候，是真的不開心", "在我忘記之前，我會一直記住的", "你說的話特別有道理，因為特別有道理",
+            "上次這麼無語還是在上次", "看君一幅畫，如看一幅畫", "天若有情天有情，人間正道是正道",
+            "十步殺一人，百步殺十人", "這麼晚還沒睡的人，應該是還沒睡吧", "這文章就像一篇文章",
+            "內容的內容充滿了內容", "聽了你的分析，我決定自己再分析分析", "人在繃不住的時候，是繃不住的",
+            "但凡你有點本事，也不至於一點本事都沒有", "在令人失望這件事情上從來不讓人失望",
+            "一定行，除非不行", "倒完一次垃圾，你就會發現少了一個垃圾袋", "如果你這句話沒錯的話，應該是對的",
+            "選舉最大的秘密就是，票多的贏、票少的輸"
+        ];
+
+        const comments = [
+            "—— 真是聽君一席話，如聽一席話",
+            "—— 這分析，連分析師都想分析一下",
+            "—— 大師，我悟了，雖然我也不知道悟了什麼",
+            "—— 這句話本身就是一句話",
+            "—— 邏輯鬼才，當世孔明",
+            "—— 此話一出，四周都安靜了",
+            "—— 這就是廢話的最高境界嗎？"
+        ];
+
+        const card = document.getElementById('card');
+        const contentDiv = document.getElementById('nonsense-content');
+        const commentDiv = document.getElementById('master-comment');
+        const counterDiv = document.getElementById('counter');
+        const particlesContainer = document.getElementById('particles');
+        
+        let count = 0;
+        let isFlipped = false;
+
+        // Initialize particles
+        function createParticles() {
+            for (let i = 0; i < 50; i++) {
+                const p = document.createElement('div');
+                p.className = 'particle';
+                const size = Math.random() * 4 + 2;
+                p.style.width = size + 'px';
+                p.style.height = size + 'px';
+                p.style.left = Math.random() * 100 + 'vw';
+                p.style.animationDuration = (Math.random() * 5 + 5) + 's';
+                p.style.animationDelay = Math.random() * 5 + 's';
+                particlesContainer.appendChild(p);
+            }
+        }
+
+        function getRandomQuote() {
+            return quotes[Math.floor(Math.random() * quotes.length)];
+        }
+
+        function getRandomComment() {
+            return comments[Math.floor(Math.random() * comments.length)];
+        }
+
+        function flipCard() {
+            if (!isFlipped) {
+                // Prepare content before flipping to back
+                const quote = getRandomQuote();
+                contentDiv.innerText = quote;
+                commentDiv.innerText = getRandomComment();
+                
+                card.classList.add('is-flipped');
+                isFlipped = true;
+                
+                count++;
+                counterDiv.innerText = count;
+                
+                // Emotional Value: Visual feedback
+                createBurstEffect();
+            } else {
+                card.classList.remove('is-flipped');
+                isFlipped = false;
+            }
+        }
+
+        function nextNonsense() {
+            if (isFlipped) {
+                // If already flipped, briefly unflip then flip back with new content
+                card.classList.remove('is-flipped');
+                setTimeout(() => {
+                    flipCard();
+                }, 400);
+            } else {
+                flipCard();
+            }
+        }
+
+        function createBurstEffect() {
+            for (let i = 0; i < 10; i++) {
+                const p = document.createElement('div');
+                p.className = 'particle';
+                p.style.width = '6px';
+                p.style.height = '6px';
+                p.style.left = '50vw';
+                p.style.top = '50vh';
+                p.style.background = 'var(--primary)';
+                p.style.boxShadow = '0 0 10px var(--primary)';
+                p.style.animation = 'burst 0.8s ease-out forwards';
+                
+                const angle = (Math.PI * 2 / 10) * i;
+                const distance = 100 + Math.random() * 50;
+                const tx = Math.cos(angle) * distance;
+                const ty = Math.sin(angle) * distance;
+                
+                p.style.setProperty('--tx', `${tx}px`);
+                p.style.setProperty('--ty', `${ty}px`);
+                
+                document.body.appendChild(p);
+                setTimeout(() => p.remove(), 1000);
+            }
+        }
+
+        // Add the burst animation dynamically
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes burst {
+                0% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+                100% { transform: translate(calc(-50% + var(--tx)), calc(-50% + var(--ty))) scale(0); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
+
+        window.onload = createParticles;
+    </script>
+</body>
+</html>
